@@ -1,0 +1,33 @@
+plugins {
+    id 'net.minecrell.plugin-yml.bukkit' version '0.5.1'
+}
+
+repositories {
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':spigot-api')
+
+    // provided by platform
+    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+
+    // shadow
+    implementation 'com.guflimc.brick.maths:spigot-api:+'
+    implementation 'com.guflimc.brick.gui:spigot-api:+'
+
+    implementation 'net.kyori:adventure-text-serializer-legacy:4.+'
+}
+
+bukkit {
+    name = rootProject.name
+    main = 'com.guflimc.brick.stats.spigot.SpigotBrickLeaderboards'
+    description = 'Create leaderboards'
+    author = 'GufliMC'
+    website = 'https://github.com/GufliMC/BrickLeaderboards'
+    apiVersion = '1.18'
+}
+
+// I want it nice like that
+generateBukkitPluginDescription.group = "minecraft"
