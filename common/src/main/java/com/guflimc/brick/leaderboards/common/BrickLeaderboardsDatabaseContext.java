@@ -1,5 +1,7 @@
 package com.guflimc.brick.leaderboards.common;
 
+import com.guflimc.brick.leaderboards.common.converters.PositionListConverter;
+import com.guflimc.brick.leaderboards.common.domain.DStatsLeaderboard;
 import com.guflimc.brick.orm.ebean.database.EbeanConfig;
 import com.guflimc.brick.orm.ebean.database.EbeanDatabaseContext;
 import com.guflimc.brick.orm.ebean.database.EbeanMigrations;
@@ -28,7 +30,9 @@ public class BrickLeaderboardsDatabaseContext extends EbeanDatabaseContext {
     }
 
     private static final Class<?>[] APPLICABLE_CLASSES = new Class[]{
+            DStatsLeaderboard.class,
 
+            PositionListConverter.class
     };
 
     public static void main(String[] args) throws IOException, SQLException {

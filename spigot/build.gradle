@@ -12,12 +12,16 @@ dependencies {
 
     // provided by platform
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+    compileOnly 'com.guflimc.brick.stats:api:+'
 
     // shadow
     implementation 'com.guflimc.brick.maths:spigot-api:+'
     implementation 'com.guflimc.brick.gui:spigot-api:+'
 
     implementation 'net.kyori:adventure-text-serializer-legacy:4.+'
+
+    implementation 'cloud.commandframework:cloud-bukkit:+'
+    annotationProcessor 'cloud.commandframework:cloud-annotations:+'
 }
 
 bukkit {

@@ -1,8 +1,8 @@
-package com.guflimc.brick.leaderboards.spigot.domain.podium;
+package com.guflimc.brick.leaderboards.spigot.type.podium;
 
-import com.guflimc.brick.leaderboards.common.domain.podium.BrickPodiumBuilder;
-import com.guflimc.brick.leaderboards.spigot.api.domain.podium.SpigotPodium;
-import com.guflimc.brick.leaderboards.spigot.api.domain.podium.SpigotPodiumBuilder;
+import com.guflimc.brick.leaderboards.common.type.podium.BrickPodiumBuilder;
+import com.guflimc.brick.leaderboards.spigot.api.type.podium.SpigotPodium;
+import com.guflimc.brick.leaderboards.spigot.api.type.podium.SpigotPodiumBuilder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,13 +21,13 @@ public class SpigotBrickPodiumBuilder extends BrickPodiumBuilder<SpigotBrickPodi
 
     @Override
     public SpigotPodium build() {
-        if ( positions == null || positions.length == 0 ) {
+        if (positions == null || positions.length == 0) {
             throw new IllegalStateException("No positions defined");
         }
-        if ( supplier == null ) {
+        if (supplier == null) {
             throw new IllegalStateException("No item supplier defined");
         }
 
-        return new SpigotBrickPodium(positions, title, name, supplier);
+        return new SpigotBrickPodium(positions, title, display, supplier);
     }
 }

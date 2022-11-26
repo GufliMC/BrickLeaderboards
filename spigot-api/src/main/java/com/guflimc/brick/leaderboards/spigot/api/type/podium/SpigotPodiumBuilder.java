@@ -1,6 +1,6 @@
-package com.guflimc.brick.leaderboards.spigot.api.domain.podium;
+package com.guflimc.brick.leaderboards.spigot.api.type.podium;
 
-import com.guflimc.brick.leaderboards.api.domain.podium.PodiumBuilder;
+import com.guflimc.brick.leaderboards.api.type.podium.PodiumBuilder;
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +15,7 @@ public interface SpigotPodiumBuilder extends PodiumBuilder {
     SpigotPodiumBuilder withTitle(@NotNull Component title, @NotNull Location position);
 
     @Override
-    SpigotPodiumBuilder withName(@NotNull Component name);
+    SpigotPodiumBuilder withDisplay(@NotNull Component display);
 
     @Override
     SpigotPodiumBuilder withPositions(@NotNull Location... positions);

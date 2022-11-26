@@ -1,9 +1,15 @@
 package com.guflimc.brick.leaderboards.spigot;
 
+import com.guflimc.brick.leaderboards.api.type.podium.Podium;
 import com.guflimc.brick.leaderboards.common.BrickLeaderboardsManager;
 import com.guflimc.brick.leaderboards.spigot.api.SpigotLeaderboardsManager;
-import com.guflimc.brick.leaderboards.spigot.domain.podium.SpigotBrickPodiumBuilder;
+import com.guflimc.brick.leaderboards.spigot.type.podium.SpigotBrickPodiumBuilder;
 import com.guflimc.brick.orm.api.database.DatabaseContext;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class SpigotBrickLeaderboardsManager extends BrickLeaderboardsManager implements SpigotLeaderboardsManager {
 
@@ -12,8 +18,16 @@ public class SpigotBrickLeaderboardsManager extends BrickLeaderboardsManager imp
     }
 
     @Override
+    protected Podium.Member member(@NotNull UUID entityId, int score) {
+        String name = Bukkit.getOfflinePlayer(entityId).getName();
+        Component displayName = name != null ? Component.text(name) : Component.text("Unknown");
+        return new Podium.Member(entityId, displayName, score);
+    }
+
+    @Override
     public SpigotBrickPodiumBuilder podium() {
         return new SpigotBrickPodiumBuilder();
     }
+
 
 }

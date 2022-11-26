@@ -3,9 +3,24 @@ plugins {
     id 'io.ebean' version '13.+'
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     api project(':api')
-    api 'com.guflimc.brick.orm:ebean:+'
 
-    implementation 'com.guflimc.brick.scheduler:api:+'
+    // provided
+    compileOnly 'com.guflimc.brick.stats:api:+'
+    compileOnly 'com.google.code.gson:gson:+'
+
+    // shadow
+    implementation 'com.guflimc.brick.orm:ebean:+'
+    implementation 'com.guflimc.brick.orm:jpa-converters:+'
+    implementation 'com.guflimc.brick.maths:database-converters:+'
+    implementation 'com.github.Marcono1234:gson-record-type-adapter-factory:v0.2.0'
+
+    api 'cloud.commandframework:cloud-core:+'
+    api 'cloud.commandframework:cloud-annotations:+'
+    annotationProcessor 'cloud.commandframework:cloud-annotations:+'
 }

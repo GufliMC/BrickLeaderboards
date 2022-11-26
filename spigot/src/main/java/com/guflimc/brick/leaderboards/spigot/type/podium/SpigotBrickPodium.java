@@ -1,9 +1,9 @@
-package com.guflimc.brick.leaderboards.spigot.domain.podium;
+package com.guflimc.brick.leaderboards.spigot.type.podium;
 
 import com.guflimc.brick.gui.spigot.item.ItemStackBuilder;
 import com.guflimc.brick.gui.spigot.item.specific.LeatherArmorBuilder;
-import com.guflimc.brick.leaderboards.common.domain.podium.BrickPodium;
-import com.guflimc.brick.leaderboards.spigot.api.domain.podium.SpigotPodium;
+import com.guflimc.brick.leaderboards.common.type.podium.BrickPodium;
+import com.guflimc.brick.leaderboards.spigot.api.type.podium.SpigotPodium;
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
 import net.kyori.adventure.text.Component;
@@ -90,7 +90,7 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
                 Member member = members().get(i);
                 as.getEquipment().setHelmet(heads[i]);
 
-                Component sub = name().replaceText(b -> b.match("(\\{[" + Pattern.quote("0") + "]})")
+                Component sub = display().replaceText(b -> b.match("(\\{[" + Pattern.quote("0") + "]})")
                         .replacement(member.score() + ""));
                 holo.setCustomName(LegacyComponentSerializer.legacySection().serialize(sub));
                 as.setCustomNameVisible(true);

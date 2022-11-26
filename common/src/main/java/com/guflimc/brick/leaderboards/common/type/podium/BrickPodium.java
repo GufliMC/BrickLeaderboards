@@ -1,26 +1,28 @@
-package com.guflimc.brick.leaderboards.common.domain.podium;
+package com.guflimc.brick.leaderboards.common.type.podium;
 
-import com.guflimc.brick.leaderboards.api.domain.podium.Podium;
-import com.guflimc.brick.leaderboards.common.domain.BrickLeaderboard;
+import com.guflimc.brick.leaderboards.api.type.podium.Podium;
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
-public abstract class BrickPodium extends BrickLeaderboard implements Podium {
+public abstract class BrickPodium implements Podium {
 
     private final Location[] positions;
     private final Title title;
-    private final Component name;
+    private final Component display;
 
     private final List<Member> members = new ArrayList<>();
 
-    public BrickPodium(@NotNull Location[] positions, Title title, Component name) {
+    public BrickPodium(@NotNull Location[] positions, Title title, Component display) {
         this.positions = positions;
         this.title = title;
-        this.name = name;
+        this.display = display;
     }
 
     @Override
@@ -34,8 +36,8 @@ public abstract class BrickPodium extends BrickLeaderboard implements Podium {
     }
 
     @Override
-    public @NotNull Component name() {
-        return name;
+    public @NotNull Component display() {
+        return display;
     }
 
     @Override
@@ -44,16 +46,16 @@ public abstract class BrickPodium extends BrickLeaderboard implements Podium {
     }
 
     @Override
-    public void update(@NotNull UUID entityId, int score) {
-        Member member = new Member(entityId, score);
+    public void update(@NotNull Member member) {
+        members.removeIf(m -> m.entityId().equals(member.entityId()));
         members.add(member);
         members.sort(Comparator.comparingInt(Member::score).reversed());
 
-        while ( members.size() > positions.length ) {
+        while (members.size() > positions.length) {
             members.remove(members.size() - 1);
         }
 
-        if ( !members.contains(member) ) {
+        if (!members.contains(member)) {
             return;
         }
 

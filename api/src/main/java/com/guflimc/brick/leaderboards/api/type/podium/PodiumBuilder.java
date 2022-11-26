@@ -1,4 +1,4 @@
-package com.guflimc.brick.leaderboards.api.domain.podium;
+package com.guflimc.brick.leaderboards.api.type.podium;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import net.kyori.adventure.text.Component;
@@ -8,7 +8,7 @@ public interface PodiumBuilder {
 
     PodiumBuilder withTitle(@NotNull Component title, @NotNull Location position);
 
-    PodiumBuilder withName(@NotNull Component name);
+    PodiumBuilder withDisplay(@NotNull Component display);
 
     PodiumBuilder withPositions(@NotNull Location... positions);
 
