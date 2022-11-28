@@ -15,7 +15,7 @@ dependencies {
     compileOnly 'com.google.code.gson:gson:+'
 
     // shadow
-    implementation 'com.guflimc.brick.orm:ebean:+'
+    api 'com.guflimc.brick.orm:ebean:+'
     implementation 'com.guflimc.brick.orm:jpa-converters:+'
     implementation 'com.guflimc.brick.maths:database-converters:+'
     implementation 'com.github.Marcono1234:gson-record-type-adapter-factory:v0.2.0'

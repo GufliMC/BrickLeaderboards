@@ -33,7 +33,7 @@ public class SpigotLeaderboardsCommands {
 
         dir = dir.clockwise();
         for ( int i = 1; i < amount; i++ ) {
-            positions[i] = dir.forwards(first, (int) Math.ceil(i / 2.0d));
+            positions[i] = dir.forwards(first, (int) Math.ceil(i / 2.0d)).addY(-Math.ceil(i / 2.0d));
             dir = dir.opposite();
         }
 
@@ -43,10 +43,10 @@ public class SpigotLeaderboardsCommands {
     //
 
     public enum CardinalDirection {
-        NORTH((x, n) -> x + n, (z, n) -> z),
-        EAST((x, n) -> x, (z, n) -> z + n),
-        SOUTH((x, n) -> x - n, (z, n) -> z),
-        WEST((x, n) -> x, (z, n) -> z - n);
+        NORTH((x, n) -> x, (z, n) -> z - n),
+        EAST((x, n) -> x + n, (z, n) -> z),
+        SOUTH((x, n) -> x, (z, n) -> z + n),
+        WEST((x, n) -> x - n, (z, n) -> z);
 
         private final BiFunction<Double, Integer, Double> x;
         private final BiFunction<Double, Integer, Double> z;
@@ -58,19 +58,19 @@ public class SpigotLeaderboardsCommands {
 
         CardinalDirection opposite() {
             CardinalDirection[] values = values();
-            int ordinal = this.ordinal() + 2 % values.length;
+            int ordinal = (this.ordinal() + 2) % values.length;
             return values[ordinal];
         }
 
         CardinalDirection clockwise() {
             CardinalDirection[] values = values();
-            int ordinal = this.ordinal() + 1 % values.length;
+            int ordinal = (this.ordinal() + 1) % values.length;
             return values[ordinal];
         }
 
         CardinalDirection counterclockwise() {
             CardinalDirection[] values = values();
-            int ordinal = this.ordinal() + 3 % values.length;
+            int ordinal = (this.ordinal() + 3) % values.length;
             return values[ordinal];
         }
 

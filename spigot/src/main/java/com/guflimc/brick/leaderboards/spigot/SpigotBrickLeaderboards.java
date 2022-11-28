@@ -48,6 +48,9 @@ public class SpigotBrickLeaderboards extends JavaPlugin {
         // register events
         PluginManager pm = getServer().getPluginManager();
 
+        // commands
+        setupCommands();
+
         getLogger().info("Enabled " + nameAndVersion() + ".");
     }
 

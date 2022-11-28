@@ -4,6 +4,7 @@ plugins {
 
 repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -26,11 +27,16 @@ dependencies {
 
 bukkit {
     name = rootProject.name
-    main = 'com.guflimc.brick.stats.spigot.SpigotBrickLeaderboards'
+    main = 'com.guflimc.brick.leaderboards.spigot.SpigotBrickLeaderboards'
     description = 'Create leaderboards'
     author = 'GufliMC'
     website = 'https://github.com/GufliMC/BrickLeaderboards'
     apiVersion = '1.18'
+    softDepend = ["BrickStats"]
+}
+
+shadowJar {
+    relocate 'com.guflimc.brick.maths', 'libs.guflimc.brick.maths'
 }
 
 // I want it nice like that

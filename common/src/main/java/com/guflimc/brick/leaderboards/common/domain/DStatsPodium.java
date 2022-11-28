@@ -14,10 +14,10 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name = "stats_leaderboards")
+@Table(name = "stats_podiums")
 public class DStatsPodium extends DStatsLeaderboard {
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 4096)
     private PositionList positions;
 
     @Convert(converter = LocationConverter.class)
@@ -40,6 +40,7 @@ public class DStatsPodium extends DStatsLeaderboard {
     public DStatsPodium(@NotNull String name, @NotNull StatsKey statsKey, @NotNull Location[] positions) {
         super(name, statsKey);
         this.positions = new PositionList(List.of(positions));
+        this.display = Component.text(statsKey.name() + ": {0}");
     }
 
     public Location[] positions() {

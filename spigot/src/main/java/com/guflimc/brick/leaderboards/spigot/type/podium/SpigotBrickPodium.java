@@ -41,6 +41,7 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
             renderArmorStands(items);
             return;
         }
+
     }
 
     private final static ItemStack QUESTION_MARK = ItemStackBuilder.skull()

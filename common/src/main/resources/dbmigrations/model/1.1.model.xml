@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <alterColumn columnName="positions" tableName="stats_podiums" type="varchar(4096)" currentType="varchar" currentNotnull="true"/>
+        <addColumn tableName="stats_podiums">
+            <column name="title" type="varchar"/>
+            <column name="display" type="varchar"/>
+        </addColumn>
+    </changeSet>
+</migration>

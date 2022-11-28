@@ -2,9 +2,11 @@ package com.guflimc.brick.leaderboards.common;
 
 import com.guflimc.brick.leaderboards.common.converters.PositionListConverter;
 import com.guflimc.brick.leaderboards.common.domain.DStatsLeaderboard;
+import com.guflimc.brick.leaderboards.common.domain.DStatsPodium;
 import com.guflimc.brick.orm.ebean.database.EbeanConfig;
 import com.guflimc.brick.orm.ebean.database.EbeanDatabaseContext;
 import com.guflimc.brick.orm.ebean.database.EbeanMigrations;
+import com.guflimc.brick.orm.jpa.converters.ComponentConverter;
 import io.ebean.annotation.Platform;
 
 import java.io.IOException;
@@ -30,15 +32,16 @@ public class BrickLeaderboardsDatabaseContext extends EbeanDatabaseContext {
     }
 
     private static final Class<?>[] APPLICABLE_CLASSES = new Class[]{
-            DStatsLeaderboard.class,
+            DStatsPodium.class,
 
-            PositionListConverter.class
+            PositionListConverter.class,
+            ComponentConverter.class
     };
 
     public static void main(String[] args) throws IOException, SQLException {
         EbeanMigrations generator = new EbeanMigrations(
                 DATASOURCE_NAME,
-                Path.of("BrickStats/common/src/main/resources"),
+                Path.of("BrickLeaderboards/common/src/main/resources"),
                 Platform.H2, Platform.MYSQL
         );
         Arrays.stream(APPLICABLE_CLASSES).forEach(generator::addClass);

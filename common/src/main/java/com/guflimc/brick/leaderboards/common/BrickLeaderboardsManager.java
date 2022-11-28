@@ -38,6 +38,8 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
 
     protected abstract Podium.Member member(@NotNull UUID entityId, int score);
 
+    protected abstract void inject(PodiumBuilder podiumBuilder);
+
     private void spawn(DStatsPodium sp) {
         PodiumBuilder pb = podium();
         if (sp.display() != null) {
@@ -47,6 +49,7 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
             pb.withTitle(sp.title(), sp.titleLocation());
         }
         pb.withPositions(sp.positions());
+        inject(pb);
         Podium podium = pb.build();
 
         StatsAPI.get().subscribe()
