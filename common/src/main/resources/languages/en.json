@@ -1,0 +1,14 @@
+{
+  "cmd.error.permission": "<red>You don't have permission for this command.",
+  "cmd.error.player-only": "<red>This command can only be executed by a player.",
+  "cmd.error.console-only": "<red>This command can only be executed by the console.",
+
+  "cmd.error.args": "<dark_red>{1} <red>is not a valid <dark_red>{0}<red>.",
+  "cmd.error.args.leaderboard": "<red>The leaderboard <dark_red>{0} <red>doest not exist.",
+
+  "cmd.podium.create.error.already.exists": "<red>A podium with the name <dark_red>{0} <red>already exists.",
+  "cmd.podium.create": "<gray>Podium <green>{0} <gray>has been created.",
+
+  "cmd.podium.delete": "<gray>Podium <green>{0} <gray>has been deleted."
+
+}

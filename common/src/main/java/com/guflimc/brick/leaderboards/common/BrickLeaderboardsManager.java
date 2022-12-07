@@ -11,9 +11,7 @@ import com.guflimc.brick.stats.api.StatsAPI;
 import com.guflimc.brick.stats.api.key.StatsKey;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -28,19 +26,13 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
 
         // load all permanent leaderboards
         statsLeaderboards.addAll(databaseContext.findAllAsync(DStatsPodium.class).join());
-
-        // podiums
-        statsLeaderboards.stream()
-                .filter(sl -> sl instanceof DStatsPodium)
-                .map(sl -> (DStatsPodium) sl)
-                .forEach(this::spawn);
     }
 
     protected abstract Podium.Member member(@NotNull UUID entityId, int score);
 
     protected abstract void inject(PodiumBuilder podiumBuilder);
 
-    private void spawn(DStatsPodium sp) {
+    protected void spawn(DStatsPodium sp) {
         PodiumBuilder pb = podium();
         if (sp.display() != null) {
             pb.withDisplay(sp.display());
@@ -53,12 +45,17 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
         Podium podium = pb.build();
 
         StatsAPI.get().subscribe()
-                .filter(event -> event.key().equals(sp.statsKey()))
-                .handler(event -> podium.update(member(event.record().id(), event.record().value())))
+                .filter(event -> event.record().key().equals(sp.statsKey()))
+                .filter(event -> event.record().actors().size() == 1)
+                .handler(event -> podium.update(member(event.record().actors().first().id(), event.record().value())))
                 .change();
     }
 
     //
+
+    public Collection<DStatsLeaderboard> leaderboards() {
+        return Collections.unmodifiableCollection(statsLeaderboards);
+    }
 
     public Optional<DStatsLeaderboard> findStatsLeaderboard(@NotNull String name) {
         return statsLeaderboards.stream()
@@ -71,8 +68,9 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
                 .flatMap(sl -> Optional.ofNullable(sl instanceof DStatsPodium sp ? sp : null));
     }
 
-    public CompletableFuture<DStatsPodium> createStatsPodium(@NotNull String name, @NotNull StatsKey statsKey, @NotNull Location[] positions) {
-        DStatsPodium statsPodium = new DStatsPodium(name, statsKey, positions);
+    public CompletableFuture<DStatsPodium> createStatsPodium(@NotNull String name, @NotNull StatsKey statsKey,
+                                                             @NotNull String actorType, @NotNull Location[] positions) {
+        DStatsPodium statsPodium = new DStatsPodium(name, statsKey, actorType, positions);
         statsLeaderboards.add(statsPodium);
         spawn(statsPodium);
         return persist(statsPodium).thenApply(v -> statsPodium);

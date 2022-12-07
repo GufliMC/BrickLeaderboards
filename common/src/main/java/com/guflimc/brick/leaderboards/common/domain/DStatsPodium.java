@@ -37,8 +37,8 @@ public class DStatsPodium extends DStatsLeaderboard {
     public DStatsPodium() {
     }
 
-    public DStatsPodium(@NotNull String name, @NotNull StatsKey statsKey, @NotNull Location[] positions) {
-        super(name, statsKey);
+    public DStatsPodium(@NotNull String name, @NotNull StatsKey statsKey, @NotNull String actorType, @NotNull Location[] positions) {
+        super(name, statsKey, actorType);
         this.positions = new PositionList(List.of(positions));
         this.display = Component.text(statsKey.name() + ": {0}");
     }

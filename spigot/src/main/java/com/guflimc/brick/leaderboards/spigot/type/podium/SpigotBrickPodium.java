@@ -13,21 +13,28 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
 
+    private final JavaPlugin plugin;
     private final Function<UUID, ItemStack> supplier;
 
-    public SpigotBrickPodium(@NotNull Location[] positions, Title title, Component name, @NotNull Function<UUID, ItemStack> supplier) {
+    public SpigotBrickPodium(@NotNull Location[] positions, Title title, Component name,
+                             @NotNull JavaPlugin plugin, @NotNull Function<UUID, ItemStack> supplier) {
         super(positions, title, name);
+        this.plugin = plugin;
         this.supplier = supplier;
     }
 
@@ -65,54 +72,85 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
             ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE).withArmorColor(Color.BLUE).build()
     };
 
+    private final static EulerAngle[][] ARM_ANGLES = new EulerAngle[][] {
+            new EulerAngle[] {
+                    new EulerAngle(Math.toRadians(200), 0, Math.toRadians(38)),
+                    new EulerAngle(Math.toRadians(330), Math.toRadians(25), 0),
+                    new EulerAngle(Math.toRadians(340), 0, Math.toRadians(345)),
+            },
+            new EulerAngle[] {
+                    new EulerAngle(Math.toRadians(250), 0, Math.toRadians(110)),
+                    new EulerAngle(Math.toRadians(335), Math.toRadians(25), 0),
+                    new EulerAngle(0, 0, 0),
+                    new EulerAngle(Math.toRadians(330), Math.toRadians(10), Math.toRadians(15))
+            },
+            new EulerAngle[] {
+                    new EulerAngle(0, 0, 0),
+                    new EulerAngle(Math.toRadians(250), Math.toRadians(290), Math.toRadians(100)),
+            }
+    };
+
     private void renderArmorStands(ItemStack[] heads) {
         for (int i = 0; i < positions().length; i++) {
             Location position = positions()[i];
+            int index = i;
 
             org.bukkit.Location bloc = SpigotMaths.toSpigotLocation(position);
-            ArmorStand as = (ArmorStand) bloc.getWorld().spawnEntity(bloc, EntityType.ARMOR_STAND);
-            ArmorStand holo = (ArmorStand) bloc.getWorld().spawnEntity(bloc.clone().add(0, 0.25, 0), EntityType.ARMOR_STAND);
+            ArmorStand statue = bloc.getWorld().spawn(bloc.clone().add(0, -0.1, 0), ArmorStand.class, false, a -> {
+                a.setGravity(false);
+                a.setArms(true);
+                a.setBasePlate(false);
+                a.setSmall(true);
+                a.setVisible(true);
+                a.setCustomNameVisible(false);
+                a.setMetadata("LEADERBOARD", new FixedMetadataValue(plugin, true));
 
-            as.getNearbyEntities(0.1, 0.3, 0.1).stream()
+                EntityEquipment eq = a.getEquipment();
+                Objects.requireNonNull(eq);
+
+                ItemStack item = ARMOR_ITEMS[index == 0 ? 0 : ARMOR_ITEMS.length % index];
+                if (item.getType().name().contains("CHESTPLATE")) {
+                    eq.setChestplate(item);
+                } else {
+                    eq.setLeggings(item);
+                }
+
+                eq.setItemInMainHand(HAND_ITEMS[index == 0 ? 0 : HAND_ITEMS.length % index]);
+
+                int m = index == 0 ? 0 : ARM_ANGLES.length % index;
+                if ( ARM_ANGLES[m].length >= 1 ) a.setLeftArmPose(ARM_ANGLES[m][0]);
+                if ( ARM_ANGLES[m].length >= 2 ) a.setRightArmPose(ARM_ANGLES[m][1]);
+                if ( ARM_ANGLES[m].length >= 3 ) a.setLeftLegPose(ARM_ANGLES[m][2]);
+                if ( ARM_ANGLES[m].length >= 4 ) a.setRightLegPose(ARM_ANGLES[m][3]);
+
+                if (index >= heads.length) {
+                    eq.setHelmet(QUESTION_MARK);
+                }
+            });
+
+            statue.getNearbyEntities(0.1, 0.4, 0.1).stream()
                     .filter(e -> e instanceof ArmorStand)
                     .forEach(Entity::remove);
 
-            as.setSmall(true);
-            as.setGravity(false);
-            as.setArms(true);
-            as.setBasePlate(false);
-            as.setVisible(true);
-
-            holo.setSmall(true);
-            holo.setGravity(false);
-            holo.setVisible(false);
+            ArmorStand holo = bloc.getWorld().spawn(bloc.clone().add(0, 0.25, 0), ArmorStand.class, false, a -> {
+                a.setVisible(false);
+                a.setSmall(true);
+                a.setGravity(false);
+                a.setCustomNameVisible(false);
+                a.setMetadata("LEADERBOARD", new FixedMetadataValue(plugin, true));
+            });
 
             if (heads.length > i) {
                 Member member = members().get(i);
-                as.getEquipment().setHelmet(heads[i]);
+                statue.getEquipment().setHelmet(heads[i]);
 
                 Component sub = display().replaceText(b -> b.match("(\\{[" + Pattern.quote("0") + "]})")
                         .replacement(member.score() + ""));
-                holo.setCustomName(LegacyComponentSerializer.legacySection().serialize(sub));
-                as.setCustomNameVisible(true);
+                statue.setCustomName(LegacyComponentSerializer.legacySection().serialize(sub));
+                statue.setCustomNameVisible(true);
 
                 holo.setCustomName(LegacyComponentSerializer.legacySection().serialize(member.displayName()));
                 holo.setCustomNameVisible(true);
-            } else {
-                as.getEquipment().setHelmet(QUESTION_MARK);
-            }
-
-            if (ARMOR_ITEMS.length > i) {
-                ItemStack item = ARMOR_ITEMS[i];
-                if (item.getType().name().contains("CHESTPLATE")) {
-                    as.getEquipment().setChestplate(item);
-                } else {
-                    as.getEquipment().setLeggings(item);
-                }
-            }
-
-            if (HAND_ITEMS.length > i) {
-                as.getEquipment().setItemInMainHand(HAND_ITEMS[i]);
             }
         }
     }

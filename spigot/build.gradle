@@ -14,6 +14,7 @@ dependencies {
     // provided by platform
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
     compileOnly 'com.guflimc.brick.stats:api:+'
+    compileOnly 'com.guflimc.brick.i18n:spigot-api:+'
 
     // shadow
     implementation 'com.guflimc.brick.maths:spigot-api:+'

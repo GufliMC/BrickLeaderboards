@@ -12,6 +12,7 @@ dependencies {
 
     // provided
     compileOnly 'com.guflimc.brick.stats:api:+'
+    compileOnly 'com.guflimc.brick.i18n:api:+'
     compileOnly 'com.google.code.gson:gson:+'
 
     // shadow

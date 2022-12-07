@@ -24,6 +24,9 @@ public class DStatsLeaderboard {
     @Column(nullable = false)
     private String statsKey;
 
+    @Column(nullable = false)
+    private String actorType;
+
     @Convert(converter = ComponentConverter.class)
     protected Component title;
 
@@ -38,9 +41,10 @@ public class DStatsLeaderboard {
     public DStatsLeaderboard() {
     }
 
-    public DStatsLeaderboard(@NotNull String name, @NotNull StatsKey statsKey) {
+    public DStatsLeaderboard(@NotNull String name, @NotNull StatsKey statsKey, @NotNull String actorType) {
         this.name = name;
         this.statsKey = statsKey.name();
+        this.actorType = actorType;
     }
 
     public UUID id() {
@@ -53,6 +57,10 @@ public class DStatsLeaderboard {
 
     public StatsKey statsKey() {
         return StatsKey.of(statsKey);
+    }
+
+    public String actorType() {
+        return actorType;
     }
 
     public Component title() {
