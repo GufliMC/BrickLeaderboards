@@ -5,14 +5,17 @@ import com.guflimc.brick.leaderboards.api.type.podium.Podium;
 import com.guflimc.brick.leaderboards.api.type.podium.PodiumBuilder;
 import com.guflimc.brick.leaderboards.common.domain.DStatsLeaderboard;
 import com.guflimc.brick.leaderboards.common.domain.DStatsPodium;
+import com.guflimc.brick.leaderboards.common.type.podium.BrickPodium;
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.brick.orm.api.database.DatabaseContext;
 import com.guflimc.brick.stats.api.StatsAPI;
+import com.guflimc.brick.stats.api.event.Subscription;
 import com.guflimc.brick.stats.api.key.StatsKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
@@ -20,6 +23,9 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
     private final DatabaseContext databaseContext;
 
     private final Set<DStatsLeaderboard> statsLeaderboards = new CopyOnWriteArraySet<>();
+    private final Set<SpawnedPodium> spawnedPodiums = new CopyOnWriteArraySet<>();
+
+    private record SpawnedPodium(BrickPodium podium, DStatsLeaderboard leaderboard, Subscription subscription) {}
 
     public BrickLeaderboardsManager(DatabaseContext databaseContext) {
         this.databaseContext = databaseContext;
@@ -44,11 +50,13 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
         inject(pb);
         Podium podium = pb.build();
 
-        StatsAPI.get().subscribe()
+        Subscription sub = StatsAPI.get().subscribe()
                 .filter(event -> event.record().key().equals(sp.statsKey()))
                 .filter(event -> event.record().actors().size() == 1)
                 .handler(event -> podium.update(member(event.record().actors().first().id(), event.record().value())))
                 .change();
+
+        spawnedPodiums.add(new SpawnedPodium((BrickPodium) podium, sp, sub));
     }
 
     //
@@ -82,6 +90,13 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
 
     public CompletableFuture<Void> remove(@NotNull DStatsLeaderboard entity) {
         statsLeaderboards.remove(entity);
+
+        spawnedPodiums.stream().filter(s -> s.leaderboard.equals(entity))
+                .forEach(s -> {
+                    s.subscription.unsubscribe();
+                    s.podium.remove();
+                });
+
         return databaseContext.removeAsync(entity);
     }
 }

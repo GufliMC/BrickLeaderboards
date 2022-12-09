@@ -25,6 +25,8 @@ public abstract class BrickPodium implements Podium {
         this.display = display;
     }
 
+    public abstract void remove();
+
     @Override
     public @NotNull Location[] positions() {
         return positions;

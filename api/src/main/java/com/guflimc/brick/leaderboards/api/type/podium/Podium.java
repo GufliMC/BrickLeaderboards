@@ -14,8 +14,7 @@ public interface Podium {
 
     @Nullable Title title();
 
-    record Title(Component content, Location position) {
-    }
+    record Title(Component content, Location position) {}
 
     @NotNull Component display();
 
@@ -23,7 +22,6 @@ public interface Podium {
 
     void update(@NotNull Member member);
 
-    record Member(@NotNull UUID entityId, @NotNull Component displayName, int score) {
-    }
+    record Member(@NotNull UUID entityId, @NotNull Component displayName, int score) {}
 
 }

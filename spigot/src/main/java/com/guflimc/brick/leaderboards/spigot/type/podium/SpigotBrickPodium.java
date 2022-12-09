@@ -20,9 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -31,11 +29,19 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
     private final JavaPlugin plugin;
     private final Function<UUID, ItemStack> supplier;
 
+    private final Set<Entity> entities = new HashSet<>();
+
     public SpigotBrickPodium(@NotNull Location[] positions, Title title, Component name,
                              @NotNull JavaPlugin plugin, @NotNull Function<UUID, ItemStack> supplier) {
         super(positions, title, name);
         this.plugin = plugin;
         this.supplier = supplier;
+    }
+
+    @Override
+    public void remove() {
+        entities.forEach(Entity::remove);
+        entities.clear();
     }
 
     @Override
@@ -46,9 +52,7 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
 
         if (Arrays.stream(items).allMatch(is -> is.getType() == Material.PLAYER_HEAD)) {
             renderArmorStands(items);
-            return;
         }
-
     }
 
     private final static ItemStack QUESTION_MARK = ItemStackBuilder.skull()
@@ -91,6 +95,9 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
     };
 
     private void renderArmorStands(ItemStack[] heads) {
+        entities.forEach(Entity::remove);
+        entities.clear();
+
         for (int i = 0; i < positions().length; i++) {
             Location position = positions()[i];
             int index = i;
@@ -127,7 +134,9 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
                     eq.setHelmet(QUESTION_MARK);
                 }
             });
+            entities.add(statue);
 
+            // failsave
             statue.getNearbyEntities(0.1, 0.4, 0.1).stream()
                     .filter(e -> e instanceof ArmorStand)
                     .forEach(Entity::remove);
@@ -139,6 +148,7 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
                 a.setCustomNameVisible(false);
                 a.setMetadata("LEADERBOARD", new FixedMetadataValue(plugin, true));
             });
+            entities.add(holo);
 
             if (heads.length > i) {
                 Member member = members().get(i);
