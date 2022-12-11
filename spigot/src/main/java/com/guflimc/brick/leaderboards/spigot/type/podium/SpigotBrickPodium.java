@@ -45,7 +45,7 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
     }
 
     @Override
-    protected void render() {
+    public void render() {
         ItemStack[] items = members().stream()
                 .map(member -> supplier.apply(member.entityId()))
                 .toArray(ItemStack[]::new);
@@ -115,16 +115,16 @@ public class SpigotBrickPodium extends BrickPodium implements SpigotPodium {
                 EntityEquipment eq = a.getEquipment();
                 Objects.requireNonNull(eq);
 
-                ItemStack item = ARMOR_ITEMS[index == 0 ? 0 : ARMOR_ITEMS.length % index];
+                ItemStack item = ARMOR_ITEMS[index == 0 ? 0 : index % ARMOR_ITEMS.length];
                 if (item.getType().name().contains("CHESTPLATE")) {
                     eq.setChestplate(item);
                 } else {
                     eq.setLeggings(item);
                 }
 
-                eq.setItemInMainHand(HAND_ITEMS[index == 0 ? 0 : HAND_ITEMS.length % index]);
+                eq.setItemInMainHand(HAND_ITEMS[index == 0 ? 0 : index % HAND_ITEMS.length]);
 
-                int m = index == 0 ? 0 : ARM_ANGLES.length % index;
+                int m = index == 0 ? 0 : index % ARM_ANGLES.length;
                 if ( ARM_ANGLES[m].length >= 1 ) a.setLeftArmPose(ARM_ANGLES[m][0]);
                 if ( ARM_ANGLES[m].length >= 2 ) a.setRightArmPose(ARM_ANGLES[m][1]);
                 if ( ARM_ANGLES[m].length >= 3 ) a.setLeftLegPose(ARM_ANGLES[m][2]);

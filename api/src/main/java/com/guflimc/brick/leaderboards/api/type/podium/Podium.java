@@ -18,6 +18,8 @@ public interface Podium {
 
     @NotNull Component display();
 
+    void render();
+
     @NotNull List<Member> members();
 
     void update(@NotNull Member member);

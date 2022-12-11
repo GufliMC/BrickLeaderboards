@@ -64,6 +64,4 @@ public abstract class BrickPodium implements Podium {
         render();
     }
 
-    protected abstract void render();
-
 }

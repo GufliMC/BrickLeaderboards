@@ -50,11 +50,16 @@ public abstract class BrickLeaderboardsManager implements LeaderboardsManager {
         inject(pb);
         Podium podium = pb.build();
 
+        StatsAPI.get().select("PLAYER", sp.statsKey(), sp.positions().length)
+                .forEach(r -> podium.update(member(r.actors().first().id(), r.value())));
+
         Subscription sub = StatsAPI.get().subscribe()
                 .filter(event -> event.record().key().equals(sp.statsKey()))
                 .filter(event -> event.record().actors().size() == 1)
                 .handler(event -> podium.update(member(event.record().actors().first().id(), event.record().value())))
                 .change();
+
+        podium.render();
 
         spawnedPodiums.add(new SpawnedPodium((BrickPodium) podium, sp, sub));
     }
